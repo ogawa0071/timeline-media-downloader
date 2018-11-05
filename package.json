@@ -15,6 +15,7 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.19.4",
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@types/chai": "^4",
