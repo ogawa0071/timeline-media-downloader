@@ -36,7 +36,8 @@ interface Variants {
 }
 
 const media = async (tweet: any) => {
-  const mediaArray: Media[] = tweet.extended_entities.media
+  // const mediaArray: Media[] = tweet.extended_entities.media
+  const mediaArray: Media[] = tweet.extended_tweet && tweet.extended_tweet.extended_entities && tweet.extended_tweet.extended_entities.media ? tweet.extended_tweet.extended_entities.media : tweet.extended_entities.media
   const screen_name = tweet.user.screen_name
 
   try {
