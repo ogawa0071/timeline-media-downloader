@@ -29,8 +29,6 @@ class TimelineMediaDownloader extends Command {
       this.timeline.push(tweet)
     })
 
-    console.log(tweets);
-
     const saveJson = async () => {
       await writeFile(`${process.cwd()}/${this.timeline[0].user.screen_name}.json`, JSON.stringify(this.timeline, null, 2))
     }

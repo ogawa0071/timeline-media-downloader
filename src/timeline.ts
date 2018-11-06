@@ -58,7 +58,7 @@ const firstSearchPremium = async (screen_name: string) => {
   const timeline = await client.get(`tweets/search/${process.env.TWITTER_PREMIUM_PRODUCT}/${process.env.TWITTER_PREMIUM_LABEL}`, {
     query: `from:${screen_name} has:media`,
     maxResults: 100,
-    toDate: "201501010000",
+    toDate: '201501010000',
   })
 
   return timeline
@@ -68,6 +68,7 @@ const searchPremium = async (screen_name: string, max_id: string) => {
   const timeline = await client.get(`tweets/search/${process.env.TWITTER_PREMIUM_PRODUCT}/${process.env.TWITTER_PREMIUM_LABEL}`, {
     query: `from:${screen_name} has:media`,
     maxResults: 100,
+    toDate: '201501010000',
     next: max_id,
   })
 
