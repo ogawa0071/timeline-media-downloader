@@ -1,5 +1,8 @@
 const Twitter = require('twitter')
+import * as dotenv from 'dotenv'
 import * as process from 'process'
+
+dotenv.config()
 
 const client: any = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,

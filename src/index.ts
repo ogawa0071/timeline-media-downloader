@@ -1,11 +1,11 @@
 import {Command, flags} from '@oclif/command'
-import * as dotenv from 'dotenv'
 import * as fs from 'fs'
+import {promisify} from 'util'
 
 import media from './media'
 import {firstUserTimeline, userTimeline} from './timeline'
 
-dotenv.config()
+const writeFile = promisify(fs.writeFile)
 
 class TimelineMediaDownloader extends Command {
   static description = 'describe the command here'
@@ -21,20 +21,25 @@ class TimelineMediaDownloader extends Command {
   timeline: any[] = []
 
   async store(tweets: any[]) {
-    fs.writeFileSync(`${process.cwd()}/timeline.json`, JSON.stringify(tweets, null, 2))
-
     tweets.forEach(async tweet => {
       this.timeline.push(tweet)
     })
 
-    await Promise.all(
+    const saveJson = async () => {
+      await writeFile(`${process.cwd()}/${this.timeline[0].user.screen_name}.json`, JSON.stringify(this.timeline, null, 2))
+    }
+
+    const saveMedia = async () => {
       tweets.map(async tweet => {
         if (tweet.extended_entities && tweet.extended_entities.media) {
           await media(tweet)
         }
+
         this.log(`Done: ${tweet.id_str}`)
       })
-    )
+    }
+
+    await Promise.all([saveJson(), saveMedia()])
 
     const oldestTweet = this.timeline[this.timeline.length - 1]
     const oldestTweetLess = parseInt(oldestTweet.id_str, 10) - 1

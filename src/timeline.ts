@@ -5,6 +5,8 @@ const firstUserTimeline = async (screen_name: string) => {
     tweet_mode: 'extended',
     screen_name,
     count: 200,
+    exclude_replies: false,
+    include_rts: false,
   })
 
   return timeline
