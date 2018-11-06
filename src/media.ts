@@ -1,5 +1,6 @@
 import axios from 'axios'
 import * as fs from 'fs'
+import * as process from 'process'
 
 interface Media {
   id: number
@@ -16,21 +17,25 @@ interface Media {
 
 const media = async (tweet: any) => {
   const mediaArray: Media[] = tweet.extended_entities.media
+
+  try {
+    fs.readdirSync(`${process.cwd()}/media`)
+  } catch {
+    fs.mkdirSync(`${process.cwd()}/media`)
+  }
+
   await Promise.all(
     mediaArray.map(async media => {
       const url = media.media_url_https
-      const name = /(.+)(\/)(.+)/.exec(url) ? /(.+)(\/)(.+)/.exec(url) : null
-
-      try {
-        fs.readdirSync(`${process.cwd()}/meida`)
-      } catch {
-        fs.mkdirSync(`${process.cwd()}/media`)
+      const name = /(.+)(\/)(.+)/.exec(url)
+      if (name === null) {
+        throw new Error()
       }
 
-      const response = await axios.get(media.media_url_https, {
+      const response = await axios.get(url, {
         responseType: 'stream',
       })
-      response.data.pipe(fs.createWriteStream(`${process.cwd()}/media/${tweet.id_str}-${name}`))
+      response.data.pipe(fs.createWriteStream(`${process.cwd()}/media/${tweet.id_str}-${name[3]}`))
     })
   )
 }

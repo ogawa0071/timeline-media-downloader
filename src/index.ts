@@ -1,7 +1,11 @@
 import {Command, flags} from '@oclif/command'
+import * as dotenv from 'dotenv'
+import * as fs from 'fs'
 
 import media from './media'
 import {firstUserTimeline, userTimeline} from './timeline'
+
+dotenv.config()
 
 class TimelineMediaDownloader extends Command {
   static description = 'describe the command here'
@@ -11,19 +15,23 @@ class TimelineMediaDownloader extends Command {
     version: flags.version({char: 'v'}),
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'screen_name'}),
+    name: flags.string({char: 'n', description: 'screen_name', required: true}),
   }
 
   timeline: any[] = []
 
   async store(tweets: any[]) {
-    tweets.forEach(tweet => {
+    fs.writeFileSync(`${process.cwd()}/timeline.json`, JSON.stringify(tweets, null, 2))
+
+    tweets.forEach(async tweet => {
       this.timeline.push(tweet)
     })
 
     await Promise.all(
       tweets.map(async tweet => {
-        await media(tweet)
+        if (tweet.extended_entities && tweet.extended_entities.media) {
+          await media(tweet)
+        }
         this.log(`Done: ${tweet.id_str}`)
       })
     )
@@ -37,7 +45,6 @@ class TimelineMediaDownloader extends Command {
     const {flags} = this.parse(TimelineMediaDownloader)
 
     const name = flags.name ? flags.name : ''
-    this.log(`hello ${name} from ./src/index.ts`)
 
     let id = ''
     let nextId = ''

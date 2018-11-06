@@ -16,6 +16,8 @@ const userTimeline = async (screen_name: string, max_id: string) => {
     screen_name,
     count: 200,
     max_id,
+    exclude_replies: false,
+    include_rts: false,
   })
 
   return timeline
